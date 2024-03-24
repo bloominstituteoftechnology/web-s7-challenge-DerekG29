@@ -4,14 +4,12 @@ import * as yup from 'yup';
 
 const ENDPOINT = 'http://localhost:9009/api/order';
 
-// 👇 Here are the validation errors you will use with Yup.
 const validationErrors = {
   fullNameTooShort: 'full name must be at least 3 characters',
   fullNameTooLong: 'full name must be at most 20 characters',
   sizeIncorrect: 'size must be S or M or L'
 }
 
-// 👇 Here you will create your schema.
 const formSchema = yup.object().shape({
   size: yup
     .string()
@@ -19,6 +17,7 @@ const formSchema = yup.object().shape({
     .required(),
   fullName: yup
     .string()
+    .trim()
     .min(3, validationErrors.fullNameTooShort)
     .max(20, validationErrors.fullNameTooLong)
     .required(),
@@ -26,7 +25,6 @@ const formSchema = yup.object().shape({
     .array()
 })
 
-// 👇 This array could help you construct your checkboxes using .map in the JSX.
 const toppings = [
   { topping_id: '1', text: 'Pepperoni' },
   { topping_id: '2', text: 'Green Peppers' },
@@ -54,7 +52,7 @@ export default function Form() {
 
   const onChange = (evt) => {
     let { id, value } = evt.target;
-    setValues({ ...values, [id]:value })
+    setValues({ ...values, [id]: value })
     yup
       .reach(formSchema, id)
       .validate(value)
@@ -68,7 +66,7 @@ export default function Form() {
 
   const changeTopping = (evt) => {
     let { id, checked } = evt.target;
-    const newToppings = [ ...values.toppings ]
+    const newToppings = [...values.toppings]
     if (checked) newToppings.push(id);
     else {
       newToppings.splice(newToppings.indexOf(id), 1);
